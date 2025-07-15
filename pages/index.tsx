@@ -1,5 +1,4 @@
-// pages/index.tsx
-import ReportForm from "@/components/ReportForm"
+import ReportForm from "../components/ReportForm"
 
 export default function Home() {
   return (
