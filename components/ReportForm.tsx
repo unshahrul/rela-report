@@ -27,11 +27,11 @@ export default function ReportForm() {
     let photoUrl = ""
     if (file) {
       const filename = `${Date.now()}-${file.name}`
-      const { data, error } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from("report-photos")
         .upload(filename, file)
 
-      if (error) {
+      if (uploadError) {
         setLoading(false)
         setMessage("❌ Gagal upload gambar.")
         return
@@ -67,18 +67,82 @@ export default function ReportForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4 bg-white rounded-xl shadow max-w-xl mx-auto mt-8">
-      <h2 className="text-xl font-bold">Borang Laporan RELA</h2>
-      <input name="name" placeholder="Nama" value={form.name} onChange={handleChange} required className="w-full p-2 border rounded" />
-      <input name="email" placeholder="Emel" value={form.email} onChange={handleChange} required className="w-full p-2 border rounded" />
-      <input name="location" placeholder="Lokasi Kejadian" value={form.location} onChange={handleChange} required className="w-full p-2 border rounded" />
-      <input name="type" placeholder="Jenis Kejadian" value={form.type} onChange={handleChange} required className="w-full p-2 border rounded" />
-      <textarea name="details" placeholder="Butiran Laporan" value={form.details} onChange={handleChange} required className="w-full p-2 border rounded" rows={4} />
-      <input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} className="w-full" />
-      <button type="submit" disabled={loading} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-        {loading ? "Memproses..." : "Hantar Laporan"}
-      </button>
-      {message && <p className="mt-2 text-sm">{message}</p>}
-    </form>
+    <main className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center px-4">
+      <div className="w-full max-w-xl bg-white shadow-2xl rounded-2xl p-8 space-y-5">
+        <h1 className="text-2xl font-bold text-green-700 text-center">Borang Laporan RELA</h1>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            name="name"
+            placeholder="Nama Pelapor"
+            value={form.name}
+            onChange={handleChange}
+            required
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+          />
+          <input
+            name="email"
+            placeholder="Emel"
+            type="email"
+            value={form.email}
+            onChange={handleChange}
+            required
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+          />
+          <input
+            name="location"
+            placeholder="Lokasi Kejadian"
+            value={form.location}
+            onChange={handleChange}
+            required
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+          />
+          <input
+            name="type"
+            placeholder="Jenis Kejadian"
+            value={form.type}
+            onChange={handleChange}
+            required
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+          />
+          <textarea
+            name="details"
+            placeholder="Butiran Laporan"
+            rows={4}
+            value={form.details}
+            onChange={handleChange}
+            required
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+          />
+          <div className="flex flex-col gap-2">
+            <input
+              type="file"
+              onChange={(e) => setFile(e.target.files?.[0] || null)}
+              className="w-full"
+            />
+            {file && (
+              <p className="text-sm text-gray-600 truncate">📎 {file.name}</p>
+            )}
+          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg transition font-semibold"
+          >
+            {loading ? "Memproses..." : "Hantar Laporan"}
+          </button>
+        </form>
+
+        {message && (
+          <div className={`text-center p-3 rounded-lg font-medium ${
+            message.includes("✅")
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          }`}>
+            {message}
+          </div>
+        )}
+      </div>
+    </main>
   )
 }
